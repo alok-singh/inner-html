@@ -16,20 +16,31 @@ const evaluationScript = async () => {
 };
 
 const getInnerHTML = async (page, url, identifier) => {
-  await page.goto(url);
-  await page.waitFor(identifier);
-  const { body, head } = await page.evaluate(evaluationScript);
-  const pathArray = url.split("/");
-  const folderName = pathArray.pop();
-  const categoryFolderName = pathArray.pop();
-  fileSystem(categoryFolderName, folderName, htmlStringGenerator(head, body));
+  try {
+    console.log(url);
+    await page.goto(url);
+    await page.waitFor(identifier);
+    const { body, head } = await page.evaluate(evaluationScript);
+    const pathArray = url.split("/").slice(3);
+    const folderName = pathArray.pop();
+    const categoryFolderName = pathArray.pop();
+    fileSystem(
+      categoryFolderName || "",
+      folderName || "",
+      htmlStringGenerator(head, body)
+    );
+  } catch (error) {
+    console.log(error);
+  }
 };
 
-const init = async () => {
+const fetchURLData = async ({ url, identifier }) => {
   const browserInstance = await puppeteer.launch();
   const page = await browserInstance.newPage();
-  await Promise.all(urls.map(url => getInnerHTML(page, url, ".article-text")));
+  await getInnerHTML(page, url, identifier);
   browserInstance.close();
 };
 
-init();
+urls.forEach(url => {
+  fetchURLData(url);
+});
