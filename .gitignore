@@ -1,0 +1,21 @@
+# Don't check auto-generated stuff into git
+htmls/*
+node_modules
+
+# Use yarn.lock instead
+package-lock.json
+yarn.lock
+
+# OSX
+.DS_Store
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Cruft
+.idea
+.vscode
+
