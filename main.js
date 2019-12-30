@@ -9,6 +9,9 @@ const evaluationScript = async () => {
       script.attributes.src.value = script.src;
     }
   });
+  document.querySelectorAll("noscript").forEach(noScript => {
+    noScript.remove();
+  })
   return {
     body: document.body.innerHTML,
     head: document.head.innerHTML
@@ -17,9 +20,7 @@ const evaluationScript = async () => {
 
 const getInnerHTML = async (page, url, identifier) => {
   try {
-    console.log(url);
-    await page.goto(url);
-    await page.waitFor(identifier);
+    await page.goto(url, { waitUntil: 'networkidle2' });
     const { body, head } = await page.evaluate(evaluationScript);
     const pathArray = url.split("/").slice(3);
     const folderName = pathArray.pop();
@@ -29,18 +30,28 @@ const getInnerHTML = async (page, url, identifier) => {
       folderName || "",
       htmlStringGenerator(head, body)
     );
+    await page.close();
   } catch (error) {
     console.log(error);
   }
 };
 
-const fetchURLData = async ({ url, identifier }) => {
-  const browserInstance = await puppeteer.launch();
+const fetchURLData = async (browserInstance, { url, identifier }) => {
   const page = await browserInstance.newPage();
-  await getInnerHTML(page, url, identifier);
-  browserInstance.close();
+  return await getInnerHTML(page, url, identifier);
 };
 
-urls.forEach(url => {
-  fetchURLData(url);
-});
+const init = async () => {
+  const browserInstance = await puppeteer.launch();
+  const sequalise = async urls => {
+    await fetchURLData(browserInstance, urls.pop());
+    if (urls.length) {
+      sequalise(urls);
+    } else {
+      await browserInstance.close();
+    }
+  };
+  sequalise(urls);  
+};
+
+init();

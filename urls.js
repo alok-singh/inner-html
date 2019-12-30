@@ -1,19 +1,123 @@
+const baseURL = `http://localhost:3000`;
+// const baseURL = `http://de-awani-web-portal-dev.eco.astro.com.my`;
+const articleDetailsUrl = [
+  `/berita-politik/test-headline-22-september-122238`,
+  `/berita-politik/declassify-ag-s-report-1mdb-ku-li-says-103493`,
+  `/berita-politik/pemilihan-parti-pemimpin-mic-sepatutnya-bertindak-atas-aduan-salah-laku-samy-vellu-46241`,
+  `/berita-politik/i-would-never-label-dr-mahathir-desperate-man-kj-46305`,
+  `/berita-politik/samy-vellu-mic-leadership-should-have-acted-party-polls-irregularities-complaints-46179`,
+  `/berita-politik/solutions-not-rhetorics-remain-relevant-khairy-46238`,
+  `/berita-politik/tamrin-ghafar-draws-pas-46208`,
+  `/berita-politik/gerakan-anti-perkauman-mahu-semarak-semula-roh-kemerdekaan-46201`,
+  `/berita-politik/tamrin-ghafar-tarik-diri-dari-pas-46199`,
+  `/berita-politik/mic-leaders-lost-their-paths-samy-vellu-46154`,
+  `/berita-politik/three-umno-members-sacked-due-dual-membership-46117`,
+  `/berita-politik/tiga-ahli-umno-maran-dipecat-kerana-sabotaj-parti-46114`,
+  `/berita-politik/anggota-pas-diingatkan-agar-tidak-sertai-pasma-46074`,
+  `/berita-politik/sami-dan-paderi-pun-tak-setuju-aktiviti-tidak-berakhlak-hadi-awang-46064`,
+  `/berita-politik/tidak-salah-rafizi-pegang-dua-jawatan-dalam-pkr-anwar-46018`,
+  `/berita-politik/nik-aziz-sokong-penggantungan-dua-adun-pas-selangor-45967`,
+  `/berita-politik/rafizi-dilantik-jadi-setiausaha-agung-pkr-pegang-dua-jawatan-selain-naib-presiden-45952`,
+  `/berita-politik/mat-razi-sworn-pengkalan-kubor-state-assemblyman-45935`,
+  `/berita-politik/mca-bantah-pihak-yang-mempersoal-pendidikan-cina-45915`,
+  `/berita-malaysia/two-pas-assemblymen-suspended-year-45889`,
+  `/berita-politik/dua-adun-pas-nyatakan-sokongan-terhadap-wan-azizah-digantung-keahlian-45888`,
+  `/berita-politik/future-mca-depends-unity-says-najib-45884`,
+  `/berita-politik/kehadiran-saya-di-oktoberfest-tak-hina-sesiapa-teresa-kok-45882`,
+  `/berita-politik/pr-desak-peguam-negara-dedah-nama-terlibat-dalam-pertemuan-tertutup-45880`,
+  `/berita-politik/mca-perlu-utuhkan-perpaduan-najib-45905`,
+  `/berita-politik/mca-against-questioning-chinese-education-country-liow-45885`,
+  `/berita-malaysia/khabar-angin-nik-aziz-meninggal-dunia-adalah-tidak-benar-45864`,
+  `/berita-malaysia/najib-garis-tiga-faktor-untuk-bn-hadapi-pru14-45859`,
+  `/berita-malaysia/bajet-2015-bajet-tidak-menyelesaikan-masalah-rakyat-pakatan-rakyat-45780`,
+  `/berita-politik/mic-terima-keputusan-ros-sekiranya-pemilihan-semula-parti-perlu-diadakan-45699`,
+  `/berita-politik/pembangkang-perlu-guna-saluran-demokrasi-dengan-cara-yang-betul-pemuda-umno-45703`,
+  `/berita-politik/dun-selangor-tiada-kuasa-gubal-undang-undang-sekat-kebebasan-bersuara-45686`,
+  `/berita-politik/mahkamah-rayuan-tolak-pengharaman-buku-zunar-45625`,
+  `/berita-malaysia/virus-5b-bakal-hancurkan-kekuatan-dalaman-pas-zainal-45563`,
+  `/berita-politik/it-viable-pas-continue-cooperation-pkr-and-dap-45510`,
+  `/berita-politik/untungkah-pas-dalam-tahaluf-siyasi-bersama-pkr-dan-dap-45501`,
+  `/berita-politik/konspirasi-jatuhkan-hadi-ulama-cuma-perang-psikologi-penganalisis-45482`,
+  `/berita-politik/pakatan-needs-platform-discuss-sustainable-development-penang-pas-45439`,
+  `/berita-politik/selangor-umno-criticises-oktoberfest-billboards-shah-alam-45432`,
+  `/berita-politik/mca-wants-umno-man-probed-sedition-over-call-abolish-sjkc-45367`,
+  `/berita-malaysia/dap-kedah-mahu-pengesahan-rasmi-ros-status-mesyuarat-agung-45304`,
+  `/berita-politik/new-pkr-leadership-line-will-not-be-announced-today-45292`,
+  `/berita-politik/tiada-pengumuman-barisan-pimpinan-pkr-baru-hari-ini-sumber-45289`,
+  `/berita-politik/peletakan-jawatan-5-pemimpin-pemuda-gerakan-bermesyuarat-selasa-45254`,
+  `/berita-politik/gerakan-youth-confirms-five-leaders-quit-45253`,
+  `/berita-malaysia/kenaikan-elaun-empat-jawatan-utama-selangor-akan-dikaji-semula-azmin-45097`,
+  `/berita-malaysia/penyingkiran-iszuree-dibuat-berdasarkan-laporan-media-hon-wai-45092`,
+  `/berita-politik/pas-p-pinang-mahu-kerajaan-negeri-tarik-balik-pemecatan-iszuree-45073`,
+  `/berita-politik/pakatan-akan-bincang-isu-pas-azmin-45074`,
+  `/berita-politik/pakatan-leadership-will-discuss-issue-pas-coalition-azmin-45079`,
+  `/berita-politik/pkr-top-guns-meet-ros-over-khalid-s-sacking-45053`,
+  `/berita-politik/dap-lebih-dekat-dengan-keadilan-seperti-digagaskan-islam-melati-rahim-45017`,
+  `/berita-politik/dua-adun-tidak-perlu-dirujuk-lembaga-disiplin-pas-mustafa-ali-45010`,
+  `/berita-politik/academician-aziz-bari-be-probed-under-sedition-act-44999`,
+  `/berita-politik/aziz-bari-akan-dipanggil-untuk-soal-siasat-bawah-akta-hasutan-44997`,
+  `/berita-politik/porfolio-exco-baharu-diumum-rabu-ini-mohamed-azmin-44991`,
+  `/berita-politik/saya-masih-ahli-pas-sampai-ajal-saari-sungib-44965`,
+  `/berita-politik/dr-mahathir-sokong-azmin-harap-tidak-ada-undi-tidak-percaya-dalam-sidang-dun-44936`,
+  `/berita-politik/pkr-dan-dap-buli-pas-nik-abduh-44937`,
+  `/berita-politik/nak-siasat-silakan-khalid-44899`,
+  `/berita-politik/jangan-ulang-perkataan-keluar-pakatan-rakyat-suhaizan-44895`,
+  `/berita-politik/kerajaan-negeri-p-pinang-tidak-demokratik-sombong-iszuree-44887`,
+  `/berita-malaysia/mca-gerakkan-jentera-raih-semula-sokongan-kaum-cina-44860`,
+  `/berita-malaysia/pkr-balas-dendam-kurangkan-exco-pas-di-selangor-syed-ali-alhabshee-44858`,
+  `/berita-politik/ada-gerakan-terancang-hadkan-suara-pas-di-selangor-noh-44853`,
+  `/berita-politik/mat-razi-dilantik-ikon-wakil-rakyat-kelantan-tok-pa-44851`,
+  `/berita-politik/tiada-sebab-ada-pihak-dalam-pas-mahu-pertikai-bilangan-exco-azmin-44847`,
+  `/berita-politik/pemuda-dap-sarawak-isytihar-tamat-kerjasama-dengan-pas-44840`,
+  `/berita-politik/pas-belum-putuskan-calon-untuk-jawatan-timbalan-speaker-dun-selangor-44839`,
+  `/berita-politik/dewan-pemuda-pas-kecam-tindakan-kerajaan-negeri-pulau-pinang-44832`,
+  `/berita-politik/dap-tiru-style-pap-nasrudin-hassan-44830`,
+  `/berita-malaysia/perpecahan-dap-kedah-berpunca-daripada-anggota-dalaman-guan-eng-44801`,
+  `/berita-politik/azmin-accepts-sultan-s-advice-over-mb-crisis-44811`,
+  `/berita-politik/pas-tidak-pernah-setuju-bilangan-exco-dikurangkan-pas-selangor-44796`,
+  `/berita-politik/anwar-may-be-charged-under-sedition-act-latheefa-koya-44792`,
+  `/berita-politik/pas-terima-baik-walaupun-bilangan-berkurangan-44788`,
+  `/berita-malaysia/anwar-disoal-siasat-berhubung-seksyen-4-akta-hasutan-44784`,
+  `/berita-politik/ada-ahli-politik-tidak-faham-institusi-raja-sultan-selangor-44778`,
+  `/berita-politik/10-adun-pakatan-selangor-angkat-sumpah-exco-44777`,
+  `/berita-politik/najib-hails-bn-s-big-win-pengkalan-kubor-44745`,
+  `/berita-politik/menang-prk-pengkalan-kubor-hadiah-hari-jadi-terbaik-untuk-saya-tok-pa-44737`,
+  `/berita-politik/prk-pengkalan-kubor-kemenangan-cemerlang-bn-najib-44738`,
+  `/berita-politik/pengkalan-kubor-no-protest-any-contesting-party-says-ec-44741`,
+  `/berita-politik/pas-memang-jangka-kalah-prk-pengkalan-kubor-44740`,
+  `/berita-politik/bn-s-win-due-effectiveness-election-machinery-muhyiddin-44733`,
+  `/berita-politik/kemenangan-bn-bukti-keberkesanan-jentera-muhyiddin-44743`,
+  `/berita-politik/i-don-t-have-enemies-in-party-mat-razi-44730`,
+  `/berita-malaysia/tidak-ada-musuh-dalam-parti-itu-kunci-utama-kemenangan-saya-mat-razi-44725`,
+  `/berita-politik/pengkalan-kubor-election-bn-wins-bigger-majority-44720`,
+  `/berita-politik/4-pas-3-dap-dan-3-pkr-members-elected-selangor-exco-44709`,
+  `/berita-politik/73-keluar-mengundi-di-pengkalan-kubor-keputusan-dijangka-seawal-9-malam-44714`,
+  `/berita-politik/pengkalan-kubor-election-ec-says-voter-turnout-73-cent-44713`,
+  `/berita-politik/mb-have-audience-sultan-tomorrow-over-selangor-exco-line-44643`,
+  `/berita-politik/4-adun-pas-3-dap-dan-3-pkr-jadi-exco-selangor-azmin-44710`,
+  `/berita-politik/27-peratus-keluar-mengundi-setakat-jam-10-pagi-spr-44689`,
+  `/berita-politik/prk-pengkalan-kubor-mat-razi-yakin-pengundi-tetap-sokong-bn-44684`,
+  `/berita-politik/prk-pengkalan-kubor-perayu-undi-cetus-provokasi-berdepan-tindakan-tegas-44683`
+];
+
 module.exports = [
-    {
-        identifier: '[data-content-type]',
-        url: 'http://localhost:3000/'
-    },
-    {
-        identifier: 'a img',
-        url: 'http://localhost:3000/berita-malaysia'
-    },
-    {
-        identifier: 'a img',
-        url: 'http://localhost:3000/berita-politik'
-    },
-    {
-        identifier: '.article-text',
-        url: 'http://localhost:3000/berita-politik/samy-vellu-mic-leadership-should-have-acted-on-party-polls-irregularities-complaints-46179',
-    },
-    // 'https://de-awani-web-portal-dev.eco.astro.com.my/berita-politik/pemuda-dap-sarawak-isytihar-tamat-kerjasama-dengan-pas-44840'
+  {
+    identifier: `[data-content-type]`,
+    url: `${baseURL}/`
+  },
+  // {
+  //   identifier: `a img`,
+  //   url: `${baseURL}/berita-malaysia`
+  // },
+  // {
+  //   identifier: `a img`,
+  //   url: `${baseURL}/berita-politik`
+  // },
+  // ...articleDetailsUrl.map(url => {
+  //   return {
+  //     identifier: `.article-text`,
+  //     url: `${baseURL}${url}`
+  //   };
+  // })
+  // 'https://de-awani-web-portal-dev.eco.astro.com.my/berita-politik/pemuda-dap-sarawak-isytihar-tamat-kerjasama-dengan-pas-44840'
 ];
