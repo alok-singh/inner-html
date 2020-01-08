@@ -1,5 +1,5 @@
 # Don't check auto-generated stuff into git
-htmls/*
+build/*
 node_modules
 
 # Use yarn.lock instead
@@ -18,4 +18,4 @@ yarn-error.log*
 # Cruft
 .idea
 .vscode
-
+*.json
